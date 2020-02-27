@@ -1,0 +1,18 @@
+// Esse comando gera um sinal de audio e manda um stream disso para o localhost, na porta 1234.
+// Ele usa o protocolo RTP, que por sua vez usa UDP para enviar os dados em tempo real
+ffmpeg -re -f lavfi -i aevalsrc="sin(400*3*PI*t)" -ar 8000 -f mulaw -f rtp rtp://127.0.0.1:1234
+
+// No macOS da pra capturar o audio de uma interface conectada, e fazer um stream disso em UDP:
+ffmpeg -re -f avfoundation -i ":2" -ar 8000 -f mulaw -acodec mp3 -ab 128k -ac 2 udp://127.0.0.1:1234
+
+// Para escutar o sinal de audio, use esse comando (usando prefixo rtp ou udp de acordo com o stream):
+ffplay rtp://127.0.0.1:1234
+
+// Para visualizar os dados chegando, direto no terminal, use o netcat:
+// Nao consegui visualizar no localhost, então no comando ffmpeg coloquei o IP de outra
+// máquina na rede, e nessa outra máquina executei o netcat:
+nc -u -v -l 1234
+
+// Tambem é possível gerar um stream UDP ou RTP a partir de um arquivo, usando o VLC
+https://www.videolan.org/vlc/index.html
+
