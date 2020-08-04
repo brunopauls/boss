@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, {Component} from 'react';
 import { View, Text } from 'react-native';
@@ -11,11 +12,13 @@ export default class TestUdp extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            currentMsg: '',
+        };
     }
 
     byteArrayToString(byteArray) {
-        
-        var utf16 = escape(decodeURIComponent(str));
+        var utf16 = escape(decodeURIComponent(byteArray));
         return utf16;
     }
 
@@ -40,11 +43,11 @@ export default class TestUdp extends Component {
 
     componentWillUnmount(){
         this.socket.close();
-        console.log("\n\n. . . . . END . . . . . \n\n");
+        console.log('\n\n. . . . . END . . . . . \n\n');
     }
 
     componentDidMount() {
-        console.log("\n\nCOMPONENT DID MOUNT\n");
+        console.log('\n\nCOMPONENT DID MOUNT\n');
         this.initUdpSocket();
     }
 
@@ -66,6 +69,7 @@ export default class TestUdp extends Component {
         this.socket.on('message', (msg, rinfo) => {
             // console.log(`socket got: ${msg} from ${rinfo.address}:${rinfo.port}`);
             console.log(`\nGOT MESSAGE!\nlength: ${msg.length}\nfirst: ${msg[0]} \n last: ${msg[msg.length-1]}`);
+            this.setState({currentMsg: msg[msg.length - 1]});
         });
 
         this.socket.on('listening', () => {
@@ -75,13 +79,11 @@ export default class TestUdp extends Component {
         });
 
         this.socket.bind(4444, '0.0.0.0');
-
-
     }
 
     sendMessage(){
         // SEND UDP PACKAGE
-        console.log("\n\nWILL SEND\n");
+        console.log('\n\nWILL SEND\n');
         let msg = 'teste';
         let msg64 = this.toByteArray(msg);
         console.log(msg64);
@@ -89,7 +91,7 @@ export default class TestUdp extends Component {
             if (err) {throw err;}
             console.log('message sent');
         });
-        console.log("\n\nAFTER SEND\n");
+        console.log('\n\nAFTER SEND\n');
     }
 
     render() {
@@ -97,6 +99,9 @@ export default class TestUdp extends Component {
             <View style={{ alignItems: 'center' }}>
                 <Text style={{alignContent: 'center'}}>
                     HELLO COMPONENT TEST-UDP
+                </Text>
+                <Text style={{alignContent: 'center'}}>
+                    {this.state.currentMsg}
                 </Text>
             </View>
         );
